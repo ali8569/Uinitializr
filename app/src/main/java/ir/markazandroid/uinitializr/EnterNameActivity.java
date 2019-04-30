@@ -47,7 +47,7 @@ public class EnterNameActivity extends AppCompatActivity {
         });
 
         int a;
-        a=2;
+        a=3;
     }
 
     private boolean valid() {
