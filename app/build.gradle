@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 def vMajor = 1
 def vMinor = 2
 def vPatch = 1
-def vSuffix = "" //No Suffix for master
+def vSuffix = "TB" //for TaxiBoards
 
 android {
     compileSdkVersion 27
