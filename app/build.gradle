@@ -1,13 +1,18 @@
 apply plugin: 'com.android.application'
 
+def vMajor = 1
+def vMinor = 2
+def vPatch = 1
+def vSuffix = "" //No Suffix for master
+
 android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "ir.markazandroid.uinitializr"
         minSdkVersion 17
         targetSdkVersion 27
-        versionCode 4
-        versionName "1.2.1"
+        versionCode vMajor * 1000 + vMinor * 100 + vPatch
+        versionName "${vMajor}.${vMinor}.${vPatch} ${vSuffix}"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -25,6 +30,19 @@ android {
     externalNativeBuild {
         ndkBuild {
             path '../android-serialport-api/jni/Android.mk'
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            //def flavor = variant.productFlavors[0].name.capitalize()
+            //def version = variant.versionName
+            //def date = new Date()
+            //def formattedDate = date.format('ddMMyy')
+            //def buildType = variant.variantData.variantConfiguration.buildType.name
+            //def versionCode = variant.versionCode
+            def version = "V${vMajor}.${vMinor}.${vPatch}_${vSuffix}"
+            outputFileName = "UInitializr_${version}.apk"
         }
     }
 }
