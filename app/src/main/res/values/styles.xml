@@ -6,6 +6,19 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:layoutDirection">ltr</item>
+    </style>
+
+
+    <style name="Bold" parent="android:TextAppearance">
+        <item name="fontPath">font/BYekan+ Bold.ttf</item>
+    </style>
+
+    <style name="Bold.Blue" parent="android:TextAppearance">
+        <item name="fontPath">font/BYekan+ Bold.ttf</item>
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
 </resources>

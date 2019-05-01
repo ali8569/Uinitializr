@@ -1,4 +1,4 @@
-package ir.markazandroid.uinitializr;
+package ir.markazandroid.uinitializr.activity;
 
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,6 +13,8 @@ import org.apache.commons.io.FileUtils;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+
+import ir.markazandroid.uinitializr.R;
 
 public class EnterNameActivity extends AppCompatActivity {
 
@@ -58,7 +60,7 @@ public class EnterNameActivity extends AppCompatActivity {
 
     private void submit() throws IOException {
         getSharedPreferences("ir.markazandroid.uinitializr.SETTINGS",MODE_WORLD_READABLE).
-                edit().putString("ir.markazandroid.uinitializr.EnterNameActivity.name",username.getText().toString())
+                edit().putString("ir.markazandroid.uinitializr.activity.EnterNameActivity.name", username.getText().toString())
                 .commit();
 
         File policeApk=new File(Environment.getExternalStorageDirectory()+"/police/app.apk");
