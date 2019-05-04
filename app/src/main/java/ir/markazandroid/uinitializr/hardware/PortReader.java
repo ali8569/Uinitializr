@@ -14,13 +14,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import ir.markazandroid.uinitializr.hardware.serial.SerialPort;
-import ir.markazandroid.uinitializr.hardware.serial.SerialPortFinder;
 import ir.markazandroid.uinitializr.util.Roozh;
 
 /**
@@ -48,9 +44,11 @@ public class PortReader extends Thread {
     private Timer timer;
     private int blockAcc,unBlockAcc;
     private PortReadDataListener listener;
+    private String portName;
 
-    public PortReader(Context context) {
+    public PortReader(Context context, String portName) {
         this.context = context;
+        this.portName = portName;
         blockAcc =0;
         unBlockAcc=0;
 
@@ -78,42 +76,12 @@ public class PortReader extends Thread {
                 lastData=cmd;
 
 
-                String[] dataArray = cmd.split(";");
+                /*String[] dataArray = cmd.split(";");
                 Map<String,String> dataMap = new HashMap<>();
                 for(String data:dataArray){
                     String[] d = data.split(":");
                     dataMap.put(d[0],d[1]);
-                }
-                int d = Integer.parseInt(dataMap.get("d"));
-
-                if (d<50 && d>0){
-                    if (!isBlocked) {
-                        blockAcc++;
-                        if (blockAcc >=3) {
-                            blockAcc =0;
-                            isBlocked = true;
-                           // sendBlockViewSignal();
-                        }
-                    }
-                    else {
-                        unBlockAcc=0;
-                    }
-                }
-                else{
-                    if (isBlocked) {
-                        unBlockAcc++;
-                        if (unBlockAcc>=0) {
-                            unBlockAcc=0;
-                            isBlocked = false;
-                           // sendUnBlockViewSignal();
-                        }
-                    }
-                    else {
-                        blockAcc=0;
-                    }
-                }
-                //handler.post(()-> Toast.makeText(context,dataMap.get("d"),Toast.LENGTH_SHORT).show());
-                Log.e("distance",dataMap.get("d")+"  ");
+                }*/
             }catch (Exception ignored){
 
             }
@@ -128,115 +96,16 @@ public class PortReader extends Thread {
             Log.e("port", "PortReader: "+info.description+" : "+info.hardwareId+" : "+info.port);
         }*/
 
-
-        timer=new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                save(lastData);
-            }
-        },10_000,10_000);
-
         init();
     }
 
 
     public void init(){
-
-        /*final UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
-        List<UsbSerialDriver> availableDrivers = UsbSerialProber.getDefaultProber().findAllDrivers(manager);
-        if (availableDrivers.isEmpty()) {
-            return;
-        }
-
-
-// Open a connection to the first available driver.
-        final UsbSerialDriver driver = availableDrivers.get(0);
-        final UsbDeviceConnection connection = manager.openDevice(driver.getDevice());
-        if (connection == null) {
-
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    PendingIntent mPermissionIntent = PendingIntent.getBroadcast(context, 0, new Intent(ACTION_USB_PERMISSION), 0);
-                    IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
-                    context.registerReceiver(mUsbReceiver, filter);
-                    manager.requestPermission(driver.getDevice(), mPermissionIntent);
-                }
-            });
-            //showToast("NO DRIVER FOUND!");
-            // You probably need to call UsbManager.requestPermission(driver.getDevice(), ..)
-            return;
-        }*/
-
-
-// Read some data! Most have just one port (port 0).
-        //port = driver.getPorts().get(0);
-
-        boolean found=false;
-        SerialPortFinder portFinder = new SerialPortFinder();
-        String[] devices = portFinder.getAllDevicesPath();
-        String portName="";
-
         try {
-            serialPort = new SerialPort(new File("/dev/ttyS3"),9600,0);
+            serialPort = new SerialPort(new File(portName), 9600, 0);
             inputStream=serialPort.getInputStream();
-            found=true;
-            portName="/dev/ttyS3";
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        }
-
-        if(!found){
-            try {
-                serialPort = new SerialPort(new File("/dev/ttyS1"),9600,0);
-                inputStream=serialPort.getInputStream();
-                found=true;
-                portName="/dev/ttyS1";
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (!found) {
-            handler.post(()-> Toast.makeText(context,"Primary Port Not Found",Toast.LENGTH_SHORT).show());
-            for (String device:devices) {
-                //new File("/dev/ttyS2")
-                try {
-                    serialPort = new SerialPort(new File(device),9600,0);
-                    inputStream=serialPort.getInputStream();
-                    if (inputStream.available()<1){
-                        Thread.sleep(200);
-                        if (inputStream.available()>0) {
-                            found=true;
-                            portName=device;
-                            handler.post(()-> Toast.makeText(context,"Port Found "+ device,Toast.LENGTH_SHORT).show());
-                            break;
-                        }
-                        serialPort.close();
-                    }
-                    else{
-                        portName=device;
-                        found=true;
-                        handler.post(()-> Toast.makeText(context,"Port Found "+ device,Toast.LENGTH_SHORT).show());
-                        break;
-                    }
-                    serialPort.close();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    try {
-                        if(serialPort!=null) {
-                            serialPort.close();
-                        }
-                    }catch (Exception ignored){}
-
-                }
-            }
-        }
-        else {
-            String finalPortName = portName;
-            handler.post(()-> Toast.makeText(context,"Port Found "+ finalPortName,Toast.LENGTH_SHORT).show());
         }
     }
 
@@ -357,7 +226,6 @@ public class PortReader extends Thread {
     public boolean write(String toWrite){
         try {
             serialPort.getOutputStream().write(toWrite.getBytes());
-            handler.post(()-> Toast.makeText(context,"Wrote "+ toWrite,Toast.LENGTH_SHORT).show());
             Log.e("wrote:",toWrite);
             return true;
         } catch (Exception e) {

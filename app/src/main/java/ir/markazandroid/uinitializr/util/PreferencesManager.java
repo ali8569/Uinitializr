@@ -13,6 +13,7 @@ public class PreferencesManager {
 
     private final String USERNAME = "username";
     private final String PASSWORD = "password";
+    private final String IS_ARDUINO_TESTING = "IS_ARDUINO_TESTING";
 
     public PreferencesManager(SharedPreferences sharedPreferences) {
         this.sharedPreferences = sharedPreferences;
@@ -31,6 +32,14 @@ public class PreferencesManager {
     }
 
     public void setPassword(String password) {
-        sharedPreferences.edit().putString(PASSWORD, password).apply();
+        sharedPreferences.edit().putString(PASSWORD, password).commit();
+    }
+
+    public boolean isStartedAfterArduinoTest() {
+        return sharedPreferences.getBoolean(IS_ARDUINO_TESTING, false);
+    }
+
+    public void setArduinoTesting(boolean isTesting) {
+        sharedPreferences.edit().putBoolean(IS_ARDUINO_TESTING, isTesting).apply();
     }
 }

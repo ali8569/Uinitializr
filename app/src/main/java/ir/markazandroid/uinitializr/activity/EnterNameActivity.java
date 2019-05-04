@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -31,14 +30,15 @@ public class EnterNameActivity extends AppCompatActivity {
         usernameLayout=findViewById(R.id.username_layout);
         submit=findViewById(R.id.submit);
 
-        username.setHint("UWDxxxx");
-        username.setText("UWD");
+        username.setHint("نام دستگاه");
 
         submit.setOnClickListener(v -> {
             if (valid()) {
                 try {
                     submit();
                 } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
@@ -60,33 +60,89 @@ public class EnterNameActivity extends AppCompatActivity {
 
     private void submit() throws IOException {
         getSharedPreferences("ir.markazandroid.uinitializr.SETTINGS",MODE_WORLD_READABLE).
-                edit().putString("ir.markazandroid.uinitializr.activity.EnterNameActivity.name", username.getText().toString())
+                edit().putString("ir.markazandroid.uinitializr.EnterNameActivity.name", username.getText().toString())
                 .commit();
 
-        File policeApk=new File(Environment.getExternalStorageDirectory()+"/police/app.apk");
-
-        FileUtils.copyInputStreamToFile(getAssets().open("Police_V1.1.41_TB.apk"),
-              policeApk);
-
-        updateTBPolice(policeApk.getPath());
+        installPolice();
 
     }
 
-    public synchronized void updateTBPolice(String apkPath) throws IOException {
+    public synchronized void installPolice() throws IOException {
 
-        Process process=Runtime.getRuntime().exec("su");
-        Log.e("Up","got here2");
+        File policeApk = new File(Environment.getExternalStorageDirectory() + "/police/Police.apk");
+
+        FileUtils.copyInputStreamToFile(getAssets().open("Police_V1.2.1_IOT20A.apk"),
+                policeApk);
+        installInSystem(policeApk, () -> {
+            try {
+                installLauncher();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public synchronized void installLauncher() throws IOException {
+        File launcherApk = new File(Environment.getExternalStorageDirectory() + "/police/Launcher.apk");
+
+        FileUtils.copyInputStreamToFile(getAssets().open("Launcher_V1.1.0_IOT20A.apk"),
+                launcherApk);
+        installInSystem(launcherApk, () -> {
+            try {
+                installAdvertiser();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public synchronized void installAdvertiser() throws IOException {
+        File launcherApk = new File(Environment.getExternalStorageDirectory() + "/police/Advertiser.apk");
+
+        FileUtils.copyInputStreamToFile(getAssets().open("Advertiser_V7.0.2_PG.apk"),
+                launcherApk);
+        installInSystem(launcherApk, () -> {
+            try {
+                reboot();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private synchronized void installInSystem(File apkFile, Runnable listener) {
+
+        new Thread(() -> {
+            Process process = null;
+            try {
+                process = Runtime.getRuntime().exec("su");
+                DataOutputStream os = new DataOutputStream(process.getOutputStream());
+                os.writeBytes(//"stop;"+
+                        "mount -o rw,remount /system;" +
+                                "cp " + apkFile.getPath() + " /system/app/" + apkFile.getName() + ";" +
+                                "rm " + apkFile.getPath() + ";" +
+                                "chmod -R 644 /system/app/" + apkFile.getName() + ";" +
+                                "chown root:root /system/app/" + apkFile.getName() + ";exit\n");
+                os.flush();
+                process.waitFor();
+                listener.run();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private void reboot() throws IOException, InterruptedException {
+
+        Process process = Runtime.getRuntime().exec("su");
         DataOutputStream os = new DataOutputStream(process.getOutputStream());
-        Log.e("Path",apkPath);
-        os.writeBytes(//"stop;"+
-                "mount -o rw,remount /system;"+
-                        "cp "+apkPath+" /system/app/Police.apk;"+
-                        "rm "+apkPath+";"+
-                        "chmod -R 644 /system/app/Police.apk;"+
-                        "chown root:root /system/app/Police.apk;"+
-                        "reboot\n");
+        os.writeBytes("reboot\n");
         os.flush();
-        Log.e("Up","got here3");
+        process.waitFor();
     }
 
 
