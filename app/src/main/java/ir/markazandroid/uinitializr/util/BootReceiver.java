@@ -3,6 +3,7 @@ package ir.markazandroid.uinitializr.util;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import ir.markazandroid.uinitializr.UInitializrApplication;
 import ir.markazandroid.uinitializr.activity.EnterNameActivity;
@@ -19,10 +20,11 @@ public class BootReceiver extends BroadcastReceiver {
         this.context = context;
 
         if (getPreferencesManager().isStartedAfterArduinoTest()) {
+            Log.e("Receive", "true");
             getPreferencesManager().setArduinoTesting(false);
             Intent intent = new Intent(context.getApplicationContext(), EnterNameActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
+            context.getApplicationContext().startActivity(intent);
         }
     }
 

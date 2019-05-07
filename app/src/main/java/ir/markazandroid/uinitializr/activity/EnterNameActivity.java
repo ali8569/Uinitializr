@@ -38,8 +38,6 @@ public class EnterNameActivity extends AppCompatActivity {
                     submit();
                 } catch (IOException e) {
                     e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
         });
@@ -71,7 +69,7 @@ public class EnterNameActivity extends AppCompatActivity {
 
         File policeApk = new File(Environment.getExternalStorageDirectory() + "/police/Police.apk");
 
-        FileUtils.copyInputStreamToFile(getAssets().open("Police_V1.2.1_IOT20A.apk"),
+        FileUtils.copyInputStreamToFile(getAssets().open("Police_V1.2.2_IOT20A.apk"),
                 policeApk);
         installInSystem(policeApk, () -> {
             try {

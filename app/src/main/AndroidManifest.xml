@@ -18,7 +18,6 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".activity.EnterNameActivity"
-            android:launchMode="singleTask"
             android:screenOrientation="nosensor" />
         <activity android:name=".activity.ArduinoTester" />
         <activity android:name=".activity.LoginActivity">
