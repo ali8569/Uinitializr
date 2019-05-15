@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 def vMajor = 1
 def vMinor = 3
 def vPatch = 1
-def vSuffix = "DS" //for DSs Box With arduino
+def vSuffix = "DS_MIRROR" //for DSs Box With arduino
 
 android {
     compileSdkVersion 27

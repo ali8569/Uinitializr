@@ -70,7 +70,7 @@ public class EnterNameActivity extends AppCompatActivity {
 
         File policeApk = new File(Environment.getExternalStorageDirectory() + "/police/Police.apk");
 
-        FileUtils.copyInputStreamToFile(getAssets().open("Police_V1.2.4_DS.apk"),
+        FileUtils.copyInputStreamToFile(getAssets().open("Police_V1.2.4_DS_MIRROR.apk"),
                 policeApk);
         installInSystem(policeApk.getPath(), "Police", "Police.apk", () -> {
             try {
@@ -98,18 +98,18 @@ public class EnterNameActivity extends AppCompatActivity {
     public synchronized void installAdvertiser() throws IOException {
         File launcherApk = new File(Environment.getExternalStorageDirectory() + "/police/Advertiser.apk");
 
-        FileUtils.copyInputStreamToFile(getAssets().open("Advertiser_V7.0.2_PG.apk"),
+        FileUtils.copyInputStreamToFile(getAssets().open("Advertiser_V7.0.4_PG.apk"),
                 launcherApk);
         installInSystem(launcherApk.getPath(), "Advertiser", "Advertiser.apk", () -> {
 
             runOnUiThread(() -> Toast.makeText(getApplication(), "OK", Toast.LENGTH_LONG).show());
-            /*try {
+            try {
                 reboot();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }*/
+            }
         });
     }
 
