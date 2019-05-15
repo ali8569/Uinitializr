@@ -98,7 +98,7 @@ public class EnterNameActivity extends AppCompatActivity {
     public synchronized void installAdvertiser() throws IOException {
         File launcherApk = new File(Environment.getExternalStorageDirectory() + "/police/Advertiser.apk");
 
-        FileUtils.copyInputStreamToFile(getAssets().open("Advertiser_V7.0.2_PG.apk"),
+        FileUtils.copyInputStreamToFile(getAssets().open("Advertiser_V7.0.4_PG.apk"),
                 launcherApk);
         installInSystem(launcherApk.getPath(), "Advertiser", "Advertiser.apk", () -> {
 

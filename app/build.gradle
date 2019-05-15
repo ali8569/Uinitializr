@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 def vMajor = 1
 def vMinor = 3
-def vPatch = 1
+def vPatch = 2
 def vSuffix = "DS" //for DSs Box With arduino
 
 android {
@@ -67,6 +67,9 @@ dependencies {
 
 /*
 Change Log
+
+---1.3.2
+-update advertiser from to 7.0.4
 
 ---1.3.1
 -update police from 1.2.1 to 1.2.2
