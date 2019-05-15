@@ -70,7 +70,7 @@ public class EnterNameActivity extends AppCompatActivity {
 
         File policeApk = new File(Environment.getExternalStorageDirectory() + "/police/Police.apk");
 
-        FileUtils.copyInputStreamToFile(getAssets().open("Police_V1.2.4_DS_MIRROR.apk"),
+        FileUtils.copyInputStreamToFile(getAssets().open("Police_V1.2.4_IOT_MIRROR.apk"),
                 policeApk);
         installInSystem(policeApk.getPath(), "Police", "Police.apk", () -> {
             try {

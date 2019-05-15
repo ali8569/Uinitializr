@@ -31,7 +31,7 @@ public class ArduinoTester extends BaseActivity {
 
         output.setMovementMethod(new ScrollingMovementMethod());
 
-        portReader = new PortReader(this, "/dev/ttyS2");
+        portReader = new PortReader(this, "/dev/ttyS4");
         portReader.setListener(this::onDataReceive);
         portReader.start();
 
