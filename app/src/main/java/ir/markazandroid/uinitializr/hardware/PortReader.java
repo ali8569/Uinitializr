@@ -45,6 +45,7 @@ public class PortReader extends Thread {
     private int blockAcc,unBlockAcc;
     private PortReadDataListener listener;
     private String portName;
+    private long lastTime;
 
     public PortReader(Context context, String portName) {
         this.context = context;
@@ -60,8 +61,11 @@ public class PortReader extends Thread {
 
 
         handler=new Handler(context.getMainLooper());
-        inputParser=new InputParser('\n', cmd -> {
+        inputParser = new InputParser('$', cmd -> {
             try {
+                long now = System.currentTimeMillis();
+                Log.e("commandTime", "" + (lastTime - now));
+                lastTime = now;
                 Log.e("command",cmd);
                 if (listener!=null) listener.onPortDataReceive(cmd);
             /*if(cmd.equals("OFF")){
@@ -116,7 +120,7 @@ public class PortReader extends Thread {
 
         //port.open(connection);
         //port.setParameters(9600, 8, UsbSerialPort.STOPBITS_1, UsbSerialPort.PARITY_NONE);
-        byte buffer[] = new byte[1024];
+        byte[] buffer = new byte[1024];
 
         //isCancelled
         while (!isCancelled) {
