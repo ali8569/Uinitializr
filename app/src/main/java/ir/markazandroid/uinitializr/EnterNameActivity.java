@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -32,15 +33,23 @@ public class EnterNameActivity extends AppCompatActivity {
         username.setHint("UWDxxxx");
         username.setText("UWD");
 
-        submit.setOnClickListener(v -> {
-            if (valid()) {
-                try {
-                    submit();
-                } catch (IOException e) {
-                    e.printStackTrace();
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (valid()) {
+                    try {
+                        submit();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
+
+        int a;
+        a=3;
+
+        int c=a;
     }
 
     private boolean valid() {
