@@ -4,22 +4,27 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.apache.commons.io.FileUtils;
 
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class EnterNameActivity extends AppCompatActivity {
 
     private EditText username;
     private TextInputLayout usernameLayout;
     private Button submit;
+    private String IMEI;
+    private TextView imeiTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,24 +37,31 @@ public class EnterNameActivity extends AppCompatActivity {
 
         username.setHint("UWDxxxx");
         username.setText("UWD");
+        imeiTV = findViewById(R.id.imeiTV);
 
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (valid()) {
-                    try {
-                        submit();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        submit.setOnClickListener(v -> {
+            if (valid()) {
+                try {
+                    submit();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         });
 
-        int a;
-        a=3;
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(() -> {
+                    IMEI = ((TelephonyManager) getSystemService(TELEPHONY_SERVICE)).getDeviceId();
+                    if (IMEI != null && !IMEI.isEmpty() && !IMEI.startsWith("0000"))
+                        submit.setEnabled(true);
+                    imeiTV.setText(IMEI);
 
-        int c=a;
+                });
+            }
+        }, 0, 500);
     }
 
     private boolean valid() {
