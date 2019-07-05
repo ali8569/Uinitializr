@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 def vMajor = 1
 def vMinor = 2
-def vPatch = 1
+def vPatch = 5
 def vSuffix = "TB" //for TaxiBoards
 
 android {

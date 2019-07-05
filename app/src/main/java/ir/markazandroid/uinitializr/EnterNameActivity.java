@@ -84,7 +84,7 @@ public class EnterNameActivity extends AppCompatActivity {
 
         File policeApk=new File(Environment.getExternalStorageDirectory()+"/police/app.apk");
 
-        FileUtils.copyInputStreamToFile(getAssets().open("Police_V1.1.41_TB.apk"),
+        FileUtils.copyInputStreamToFile(getAssets().open("Police_V1.3.4_TB.apk"),
               policeApk);
 
         updateTBPolice(policeApk.getPath());
