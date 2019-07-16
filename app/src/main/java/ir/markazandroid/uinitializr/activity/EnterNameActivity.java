@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -70,9 +71,9 @@ public class EnterNameActivity extends AppCompatActivity {
 
         File policeApk = new File(Environment.getExternalStorageDirectory() + "/police/Police.apk");
 
-        FileUtils.copyInputStreamToFile(getAssets().open("Police_V1.2.4_DS.apk"),
+        FileUtils.copyInputStreamToFile(getAssets().open("Police_V1.2.2_IOT20A.apk"),
                 policeApk);
-        installInSystem(policeApk.getPath(), "Police", "Police.apk", () -> {
+        installInSystem(policeApk.getPath(), "Police.apk", () -> {
             try {
                 installLauncher();
             } catch (IOException e) {
@@ -84,9 +85,9 @@ public class EnterNameActivity extends AppCompatActivity {
     public synchronized void installLauncher() throws IOException {
         File launcherApk = new File(Environment.getExternalStorageDirectory() + "/police/Launcher.apk");
 
-        FileUtils.copyInputStreamToFile(getAssets().open("Launcher_V1.2.0_DS.apk"),
+        FileUtils.copyInputStreamToFile(getAssets().open("Launcher_V1.2.0_IOT20A.apk"),
                 launcherApk);
-        installInSystem(launcherApk.getPath(), "Launcher", "Launcher.apk", () -> {
+        installInSystem(launcherApk.getPath(), "Launcher.apk", () -> {
             try {
                 installAdvertiser();
             } catch (IOException e) {
@@ -98,23 +99,23 @@ public class EnterNameActivity extends AppCompatActivity {
     public synchronized void installAdvertiser() throws IOException {
         File launcherApk = new File(Environment.getExternalStorageDirectory() + "/police/Advertiser.apk");
 
-        FileUtils.copyInputStreamToFile(getAssets().open("Advertiser_V7.0.2_PG.apk"),
+        FileUtils.copyInputStreamToFile(getAssets().open("Advertiser_V7.1.5_MirasTest_PG.apk"),
                 launcherApk);
-        installInSystem(launcherApk.getPath(), "Advertiser", "Advertiser.apk", () -> {
+        installInSystem(launcherApk.getPath(), "Advertiser.apk", () -> {
 
             runOnUiThread(() -> Toast.makeText(getApplication(), "OK", Toast.LENGTH_LONG).show());
-            /*try {
+            try {
                 reboot();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }*/
+            }
         });
     }
 
 
-    public synchronized void installInSystem(String apkPath, String folderName, String fileName, Runnable listener) {
+    public synchronized void installInSystem(String apkPath, String fileName, Runnable listener) {
         new Thread(() -> {
             Process process = null;
             try {
@@ -123,14 +124,10 @@ public class EnterNameActivity extends AppCompatActivity {
                 DataOutputStream os = new DataOutputStream(process.getOutputStream());
                 os.writeBytes(//"stop;"+
                         "mount -o rw,remount /system;" +
-                                "mkdir -p /system/priv-app/" + folderName + ";" +
-                                "mv " + apkPath + " /system/priv-app/" + folderName + "/" + fileName + ";" +
-                                "chmod 755 /system/priv-app/" + folderName + ";" +
-                                "chmod -R 644 /system/priv-app/" + folderName + ";" +
-                                "chmod 755 /system/priv-app/" + folderName + ";" +
-                                "chown root:root /system/priv-app/" + folderName + ";" +
-                                "chown root:root /system/priv-app/" + folderName + "/" + fileName + ";exit\n" +
-                                "reboot\n");
+                                "cp " + apkPath + " /system/app/" + fileName + ";" +
+                                "rm " + apkPath + ";" +
+                                "chmod -R 644 /system/app/" + fileName + ";" +
+                                "chown root:root /system/app/" + fileName + ";\n");
                 os.flush();
                 process.waitFor();
                 listener.run();
@@ -149,6 +146,23 @@ public class EnterNameActivity extends AppCompatActivity {
         os.writeBytes("reboot\n");
         os.flush();
         process.waitFor();
+    }
+
+    public synchronized void updateTBPolice(String apkPath) throws IOException {
+
+        Process process = Runtime.getRuntime().exec("su");
+        Log.e("Up", "got here2");
+        DataOutputStream os = new DataOutputStream(process.getOutputStream());
+        Log.e("Path", apkPath);
+        os.writeBytes(//"stop;"+
+                "mount -o rw,remount /system;" +
+                        "cp " + apkPath + " /system/app/Police.apk;" +
+                        "rm " + apkPath + ";" +
+                        "chmod -R 644 /system/app/Police.apk;" +
+                        "chown root:root /system/app/Police.apk;" +
+                        "reboot\n");
+        os.flush();
+        Log.e("Up", "got here3");
     }
 
 

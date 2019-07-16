@@ -20,12 +20,14 @@ public class BootReceiver extends BroadcastReceiver {
         this.context = context;
 
         if (getPreferencesManager().isStartedAfterArduinoTest()) {
-            Log.e("Receive", "true");
-            getPreferencesManager().setArduinoTesting(false);
-            Intent intent = new Intent(context.getApplicationContext(), EnterNameActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.getApplicationContext().startActivity(intent);
+
         }
+
+        Log.e("Receive", "true");
+        Intent intent = new Intent(context.getApplicationContext(), EnterNameActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.getApplicationContext().startActivity(intent);
+        getPreferencesManager().setArduinoTesting(false);
     }
 
     private PreferencesManager getPreferencesManager() {
